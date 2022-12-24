@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  django:
+    container_name: ${DJANGO_NAME}
+    build:
+      context: ./django_project
+    env_file:
+      - ./env/django.env
+      - ./env/postgres_creditionals.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+      - redis
+    networks:
+      - db-net
+    command: bash -c "python manage.py makemigrations ; python manage.py migrate ; python manage.py runserver 0.0.0.0:8000 ;"
+
+  react:
+    container_name: ${REACT_NAME}
+    build:
+      context: ./react_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+      - redis
+
+  redis:
+    container_name: ${REDIS_NAME}
+    restart: always
+    image: redis
+    ports:
+      - "6379:6379"
+    depends_on:
+      - database
+    networks:
+      - db-net
+
+  database:
+    container_name: ${POSTGRES_NAME}
+    hostname: my_database
+    image: postgres:15-bullseye
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    env_file:
+      - ./env/postgres_creditionals.env
+    networks:
+      - db-net
+
+networks:
+  db-net:
+    driver: bridge

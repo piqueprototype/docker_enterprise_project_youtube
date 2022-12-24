@@ -103,6 +103,8 @@ npx create-react-app <YOUR REACT UI NAME> # Create the React application
   - ```env
     REACT_NAME=YOUR_REACT_APP_NAME
     DJANGO_NAME=YOUR_DJANGO_APP_NAME
+    REDIS_NAME=YOUR_REDIS_APP_NAME
+    POSTGRES_NAME=YOUR_POSTGRES_APP_NAME
     VOLUME_NAME=YOUR_VOLUME_NAME
     ```
 - postgres_creditionals.env
@@ -133,8 +135,6 @@ npx create-react-app <YOUR REACT UI NAME> # Create the React application
           - ./env/postgres_creditionals.env
         ports:
           - "8000:8000"
-        volumes:
-          - ./django_project:/${DJANGO_NAME}
         depends_on:
           - database
           - redis
@@ -148,8 +148,6 @@ npx create-react-app <YOUR REACT UI NAME> # Create the React application
           context: ./react_app
         ports:
           - "3000:3000"
-        volumes:
-          - ./react_app:/${REACT_NAME}
         depends_on:
           - database
           - redis
@@ -176,8 +174,6 @@ npx create-react-app <YOUR REACT UI NAME> # Create the React application
           options:
             max-size: 10m
             max-file: "3"
-        volumes:
-          - ./data/${VOLUME_NAME}:/data/${VOLUME_NAME}
         env_file:
           - ./env/postgres_creditionals.env
         networks:
@@ -228,7 +224,7 @@ npx create-react-app <YOUR REACT UI NAME> # Create the React application
   - Directory = ```./react_app/```
   - ```
     FROM node:14.17.3
-    ENV REACT_DIRECTORY=mockup_ui
+    ENV REACT_DIRECTORY=react_ui
     WORKDIR /${REACT_DIRECTORY}
     COPY ./${REACT_DIRECTORY}/ .
     RUN npm install

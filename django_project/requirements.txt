@@ -1,0 +1,7 @@
+Django==4.1
+django-cors-headers
+redis
+psycopg2
+requests
+schedule
+pysftp
